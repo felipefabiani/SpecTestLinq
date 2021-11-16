@@ -1,0 +1,22 @@
+﻿<MudPaper Class="pa-1 ma-1" Elevation="3">
+    <SearchComponent OnSearch="SeachingMovie"></SearchComponent>
+    <BuyOptonsComponent SelectedMovie=@_selectedMovie></BuyOptonsComponent>
+    <MovieListComponent 
+        MovieSearch=@_movieSearchVM
+        OnMovieSelected=@OnMovieSelected></MovieListComponent>
+</MudPaper>
+
+@code {
+    private MovieEntity? _selectedMovie = null;
+    private MovieSearchVM? _movieSearchVM = null;
+
+    private void OnMovieSelected(MovieEntity value)
+    {
+        _selectedMovie = value;
+    }
+
+    private void SeachingMovie(MovieSearchVM value)
+    {
+        _movieSearchVM = value;
+    }
+}

@@ -1,0 +1,41 @@
+﻿
+<MudPaper Class="pa-2 ma-2" Elevation="1">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="6" sm="3" Class="d-flex justify-center">
+            <MudSwitch @bind-Checked="@_movieSearchVM.IsForKidOnly"
+                       ThumbIcon="@(OnThumbIconChanged(_movieSearchVM.IsForKidOnly))"
+                       ThumbIconColor="@(OnThumbIconColorChanged(_movieSearchVM.IsForKidOnly))">
+                For kids only
+            </MudSwitch>
+        </MudItem>
+        <MudItem xs="6" sm="3" Class="d-flex justify-center">
+
+            <MudSwitch @bind-Checked="@_movieSearchVM.IsAvailableOnCD"
+                       ThumbIcon="@(OnThumbIconChanged(_movieSearchVM.IsAvailableOnCD))"
+                       ThumbIconColor="@(OnThumbIconColorChanged(_movieSearchVM.IsAvailableOnCD))">
+                On CD
+            </MudSwitch>
+        </MudItem>
+        <MudItem xs="6" sm="3" Class="d-flex justify-center">
+            <MudNumericField @bind-Value="_movieSearchVM.MinimumRating" Label="Rating at least" Variant="Variant.Text" Min="0" Max="10" Step=".1M" />
+        </MudItem>
+        <MudItem xs="6" sm="3" Class="d-flex justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Search">Search</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public EventCallback<MovieSearchVM> OnSearch { get; set; }
+
+    private MovieSearchVM _movieSearchVM = MovieSearchVM.GetDefault();
+
+    private string OnThumbIconChanged(bool value) => value ? Icons.Material.Filled.Done : Icons.Material.Filled.Close;
+    private Color OnThumbIconColorChanged(bool value) => value ? Color.Success : Color.Error;
+
+    private async Task Search()
+    {
+        await OnSearch.InvokeAsync(_movieSearchVM);
+    }
+}

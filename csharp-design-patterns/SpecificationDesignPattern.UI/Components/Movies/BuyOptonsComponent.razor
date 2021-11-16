@@ -1,0 +1,53 @@
+﻿<MudPaper Class="pa-2 ma-2" Elevation="1">
+    <MudGrid>
+        <MudItem xs="4" md="4">
+            <MudElement HtmlTag="h2">
+                Selected movie: @SelectedMovie?.Name
+            </MudElement>
+        </MudItem>
+        <MudItem xs="4" md="6">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       @onclick="@(() => Snackbar.Add("You've bought a ticket", Severity.Success))"
+                       Disabled="@(!IsMovieSelected)">Buy Adult Ticket</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       @onclick="BuyChildTicket"
+                       Disabled="@(!IsMovieSelected)">Buy Child Ticket</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       @onclick="BuyCD"
+                       Disabled="@(!IsMovieSelected)">Buy on CD</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+@code {
+    [Parameter]
+    public MovieEntity? SelectedMovie { get; set; } = null;
+    private bool IsMovieSelected { get => SelectedMovie is not null; }
+    string OnThumbIconChanged(bool value) => value ? Icons.Material.Filled.Done : Icons.Material.Filled.Close;
+    Color OnThumbIconColorChanged(bool value) => value ? Color.Success : Color.Error;
+
+    private void BuyCD()
+    {
+        ArgumentNullException.ThrowIfNull(SelectedMovie);
+
+        if (!MovieEntity.HasCDVersion.IsSatisfiedBy(SelectedMovie))
+        {
+            Snackbar.Add("The movie doesn't have a CD version", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add("You've bought a ticket", Severity.Success);
+    }
+
+    private void BuyChildTicket()
+    {
+        ArgumentNullException.ThrowIfNull(SelectedMovie);
+
+        if (!MovieEntity.IsSuitableForChildren.IsSatisfiedBy(SelectedMovie))
+        {
+            Snackbar.Add("The movie is not suitable for children", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add("You've bought a ticket", Severity.Success);
+    }
+}
